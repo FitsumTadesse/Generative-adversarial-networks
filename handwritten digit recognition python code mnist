@@ -1,5 +1,4 @@
-**Loading the MNIST dataset in Keras**
-
+#Loading the MNIST dataset in Keras
 import keras
 from keras.callbacks import History 
 history = History()
@@ -11,21 +10,21 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
-**import the MNIST dataset from Keras**
-
+#import the MNIST dataset from Keras
 batch_size = 128
 num_classes = 10
-epochs = 12
+epochs = 25
 
 # input image dimensions
 img_rows, img_cols = 28, 28
 
-**MNIST dataset using the Keras**
+
+#MNIST dataset using the Keras
 
 from keras.datasets import mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-**normalize inputs from 0-255 to 0-1**
+#normalize inputs from 0-255 to 0-1
 
 if K.image_data_format() == 'channels_first':
     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -44,15 +43,12 @@ print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
 
-#image_index = 35
-#print(y_train[image_index])
-
-**convert the dependent variable in the form of integers to a binary class matrix**
+#convert the dependent variable in the form of integers to a binary class matrix
 
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-**Design a Model**
+#Design a Model
 
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
@@ -66,8 +62,7 @@ model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
-**Compile and Train Model**
-
+#Compile and Train Model
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
@@ -80,25 +75,25 @@ model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-model.save("first_test_model.h5")
+model.save("first_test")
 
+#Test with Handwritten Digits
 import imageio
 import numpy as np
 from matplotlib import pyplot as plt
 
-im = imageio.imread("5.png")
+im = imageio.imread("7_11_7.jpg")
 
-gray = np.dot(im[...,:3], [0.299, 0.587, 0.114])
+#convert the RGB values to grayscale
+import matplotlib.image as mpimg
+gray = mpimg.imread('7_11_7.jpg')
+
+#gray = np.dot(im[...,:3], [0.299, 0.587, 0.114])
 plt.imshow(gray, cmap = plt.get_cmap('gray'))
 plt.show()
 
-
-from google.colab import drive
-drive.mount('/content/drive')
-
 # reshape the image
-print(gray.shape,gray[0])
-gray = gray.reshape(1,img_rows, img_cols, 1)
+gray = gray.reshape(1, img_rows, img_cols, 1)
 
 # normalize image
 gray /= 255
@@ -110,3 +105,4 @@ model = load_model("first_test_model.h5")
 # predict digit
 prediction = model.predict(gray)
 print(prediction.argmax())
+
